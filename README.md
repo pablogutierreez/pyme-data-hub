@@ -37,7 +37,7 @@ First, clone the repository and create an isolated environment. This ensures tha
 
 ```bash
 # Clone the repository
-git clone [https://github.com/YourUsername/pyme-data-hub.git](https://github.com/YourUsername/pyme-data-hub.git)
+git clone [https://github.com/YourUsername/pyme-data-hub.git](https://github.com/pablogutierreez/pyme-data-hub.git)
 cd pyme-data-hub
 
 # Create a virtual environment named 'venv'
