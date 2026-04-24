@@ -21,3 +21,33 @@ Most SMBs generate valuable daily data but lack the technical infrastructure to 
 2. **Transform:** Data is cleaned, typed, and normalized in memory.
 3. **Load:** The standardized data is pushed into BigQuery structured tables.
 4. **Serve:** Live dashboards query the unified dataset to provide actionable insights.
+
+## ⚙️ Step-by-Step Deployment Guide
+
+This guide explains how to set up the ETL pipeline locally for development, testing, or onboarding a new SMB client.
+
+### 1. Prerequisites
+Before starting, ensure you have the following installed and configured:
+- **Python 3.9+**: The core language for the pipeline.
+- **Google Cloud CLI (`gcloud`)**: Required for secure, keyless authentication.
+- **Google Cloud Project**: You need an active GCP project with the BigQuery API enabled. 
+
+### 2. Local Environment Setup
+First, clone the repository and create an isolated environment. This ensures that the project dependencies do not interfere with your system's global Python packages.
+
+```bash
+# Clone the repository
+git clone [https://github.com/YourUsername/pyme-data-hub.git](https://github.com/YourUsername/pyme-data-hub.git)
+cd pyme-data-hub
+
+# Create a virtual environment named 'venv'
+python3 -m venv venv
+
+# Activate the virtual environment
+# On macOS/Linux:
+source venv/bin/activate  
+# On Windows:
+# .\venv\Scripts\activate
+
+# Install all required data engineering and cloud libraries
+pip install -r requirements.txt
