@@ -51,6 +51,7 @@ source venv/bin/activate
 
 # Install all required data engineering and cloud libraries
 pip install -r requirements.txt
+```
 
 ## 🚀 Next Steps & Project Roadmap
 
@@ -75,3 +76,4 @@ This project is currently in its MVP (Minimum Viable Product) stage. The followi
 - [ ] **Automated Validation**: Integrate data quality checks (e.g., Null handling, range validation) before the BigQuery Load stage.
 - [ ] **BigQuery ML**: Implement predictive models for Sales Forecasting and Customer Churn directly within the warehouse.
 - [ ] **Observability**: Set up automated Slack/Email alerts for pipeline failures or data anomalies.
+
