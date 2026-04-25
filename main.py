@@ -2,6 +2,10 @@ import os
 import logging
 import pandas as pd
 from dotenv import load_dotenv
+from extractors.api_client import APIClient
+from extractors.dummyjson_client import DummyJSONClient
+from transformers.flatten_coordinates import flatten_user_coordinates
+from loaders.bigquery_loader import load_to_bigquery
 
 load_dotenv()
 
@@ -23,11 +27,10 @@ def run_multi_niche_pipeline():
         logging.error("❌ MOCKAROO_API_KEY not found in .env")
         return
 
-    from extractors.api_client import api_client
-    client = api_client(base_url, api_key)
+    client = APIClient(base_url, api_key)
 
     verticals = [
-        {"name": "E-commerce", "endpoint": "ecommerce.json", "table": "fact_ecommerce_sales"},
+        {"name": "E-commerce", "endpoint": "e_commerce.json", "table": "fact_ecommerce_sales"},
         {"name": "Gym & SaaS", "endpoint": "gym_saas.json", "table": "fact_gym_memberships"},
         {"name": "Healthcare", "endpoint": "healthcare.json", "table": "fact_clinic_appointments"},
         {"name": "Logistics", "endpoint": "logistics.json", "table": "fact_logistics_trips"},
@@ -36,6 +39,7 @@ def run_multi_niche_pipeline():
 
     logging.info(f"Using Google Cloud Project: {project_id}")
 
+    # --- Mockaroo verticals ---
     for industry in verticals:
         try:
             logging.info(f"📦 Extracting {industry['name']} data...")
@@ -46,17 +50,31 @@ def run_multi_niche_pipeline():
 
                 date_cols = [col for col in df.columns if "Date" in col or "Time" in col]
                 for col in date_cols:
-                    df[col] = pd.to_datetime(df[col], errors="coerce")
+                    df[col] = pd.to_datetime(df[col], errors="coerce").dt.floor("us")
 
                 logging.info(f"✅ {industry['name']}: {len(df)} rows extracted")
-
-                from loaders.bigquery_loader import load_to_bigquery
                 load_to_bigquery(df, industry["table"])
             else:
                 logging.warning(f"⚠️ No data returned for {industry['name']}")
 
         except Exception as e:
             logging.error(f"❌ Error processing {industry['name']}: {e}")
+
+    # --- DummyJSON: Users with GPS coordinates ---
+    try:
+        logging.info("📦 Extracting DummyJSON user coordinates...")
+        dummy_client = DummyJSONClient()
+        raw_users = dummy_client.fetch_users(limit=100)
+
+        if raw_users:
+            df_users = flatten_user_coordinates(raw_users)
+            logging.info(f"✅ DummyJSON Users: {len(df_users)} rows extracted")
+            load_to_bigquery(df_users, "dim_user_coordinates")
+        else:
+            logging.warning("⚠️ No data returned from DummyJSON")
+
+    except Exception as e:
+        logging.error(f"❌ Error processing DummyJSON users: {e}")
 
     logging.info("🏁 ALL VERTICALS PROCESSED SUCCESSFULLY")
 
