@@ -4,3 +4,6 @@ google-cloud-bigquery
 python-dotenv
 db-dtypes
 pyarrow
+pandas-gbq
+flask
+gunicorn
