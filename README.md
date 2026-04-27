@@ -58,9 +58,9 @@ pip install -r requirements.txt
 This project is currently in its MVP (Minimum Viable Product) stage. The following roadmap outlines the transition from a local script to a production-grade enterprise data solution:
 
 ### ☁️ Phase 1: Cloud Deployment & Orchestration
-- [ ] **Dockerization**: Create a `Dockerfile` to containerize the Python application for consistent execution across environments.
-- [ ] **Google Cloud Run**: Deploy the containerized pipeline as a serverless service to handle ingestion on-demand.
-- [ ] **Cloud Scheduler**: Implement a CRON job to trigger the pipeline daily, ensuring real-time dashboard updates.
+- [x] **Dockerization**: Create a `Dockerfile` to containerize the Python application for consistent execution across environments.
+- [x] **Google Cloud Run**: Deploy the containerized pipeline as a serverless service to handle ingestion on-demand.
+- [x] **Cloud Scheduler**: Implement a CRON job to trigger the pipeline daily, ensuring real-time dashboard updates.
 
 
 
