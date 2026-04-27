@@ -39,7 +39,7 @@ def run_multi_niche_pipeline():
 
     logging.info(f"Using Google Cloud Project: {project_id}")
 
-    # --- Mockaroo verticals ---
+ # --- Mockaroo verticals ---
     for industry in verticals:
         try:
             logging.info(f"📦 Extracting {industry['name']} data...")
@@ -48,9 +48,18 @@ def run_multi_niche_pipeline():
             if data:
                 df = pd.DataFrame(data)
 
-                date_cols = [col for col in df.columns if "Date" in col or "Time" in col]
+                # MODIFICACIÓN AQUÍ: Excluimos 'Delivery_Time_Days' de la conversión a fecha
+                date_cols = [
+                    col for col in df.columns 
+                    if ("Date" in col or "Time" in col) and col != "Delivery_Time_Days"
+                ]
+                
                 for col in date_cols:
                     df[col] = pd.to_datetime(df[col], errors="coerce").dt.floor("us")
+
+                # OPCIONAL: Asegurarnos de que Delivery_Time_Days sea numérico
+                if "Delivery_Time_Days" in df.columns:
+                    df["Delivery_Time_Days"] = pd.to_numeric(df["Delivery_Time_Days"], errors="coerce")
 
                 logging.info(f"✅ {industry['name']}: {len(df)} rows extracted")
                 load_to_bigquery(df, industry["table"])
